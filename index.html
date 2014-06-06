@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Meal Planner</title>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+<meta name="description" content="CSCI 330 Meal Planner" />
+<meta name="keywords" content="Meal Planner" />
+<meta name="robots" content="index, follow" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+</head>
+<body>
+
+	<script type="text/javascript">
+		//Language is a deprecated attribute, you should use
+		//type="text/javascript" instead 
+
+		var XMLHttpRequestObject = false;
+
+		if (window.XMLHttpRequest) {
+			XMLHttpRequestObject = new XMLHttpRequest();
+		}
+
+		function getIngredientList(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var ingList = JSON
+								.parse(XMLHttpRequestObject.responseText)
+
+						var text = "<h3> Ingredients </h3>";
+						for ( var i = 0; i < ingList.length; i++) {
+							text = text + ingList[i].id + ": "
+									+ ingList[i].name + "<br />";
+						}
+						if (ingList.length == 0) {
+							text += "No ingredients in the database";
+						}
+
+						obj.innerHTML = text;
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getIngredientList
+
+		function getIngredientById(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				var id = document.getElementById("t_ingid").value;
+
+				source = source + id;
+				//alert(source);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var ing = JSON.parse(XMLHttpRequestObject.responseText)
+						//alert(ing);
+						var text = "";
+						if (XMLHttpRequestObject.responseText == "null") {
+							text = "<h3> Ingredient </h3>";
+							text = text
+									+ "Ingredient not in database with ID: "
+									+ id;
+						} else {
+							text = "<h3> Ingredient </h3>";
+							text = text + ing.id + ": " + ing.name + "<br />";
+						}
+						obj.innerHTML = text;
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getIngredientById
+
+		function getIngredientByName(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				var name = document.getElementById("t_ingname").value;
+
+				source = source + name;
+				//alert(source);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var ing = JSON.parse(XMLHttpRequestObject.responseText)
+						//alert(ing);
+						var text = "";
+						if (XMLHttpRequestObject.responseText == "null") {
+							text = "<h3> Ingredient </h3>";
+							text = text + "Ingredient not in database: " + name;
+						} else {
+							text = "<h3> Ingredient </h3>";
+							text = text + ing.id + ": " + ing.name + "<br />";
+						}
+						obj.innerHTML = text;
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getIngredientByName
+
+		function addIngredient(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				//var id = document.getElementById("t_ingid").value;
+				//source = source+id;
+				//alert(source);
+
+				var iname = document.f_addIngredient.iname.value;
+
+				var parameters = "iname=" + iname;
+				//alert(parameters);
+				XMLHttpRequestObject.open("POST", source);
+				//alert(source);
+				XMLHttpRequestObject.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var text = XMLHttpRequestObject.responseText;
+						obj.innerHTML = text;
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(parameters);
+
+			}//end if
+		}//end addIngredient
+
+		function deleteIngredient(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				//var id = document.getElementById("t_ingid").value;
+				//source = source+id;
+				//alert(source);
+
+				var idel = document.f_deleteIngredient.idel.value;
+
+				var parameters = "idel=" + idel;
+				XMLHttpRequestObject.open("POST", source);
+				XMLHttpRequestObject.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+						var text = XMLHttpRequestObject.responseText;
+						obj.innerHTML = text;
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(parameters);
+
+			}//end if
+		}//end addIngredient
+
+		function getRecipeList(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var recipeList = JSON
+								.parse(XMLHttpRequestObject.responseText)
+
+						var text = "<h3> Recipes </h3>";
+						for ( var i = 0; i < recipeList.length; i++) {
+							text = text + recipeList[i].id + ": "
+									+ recipeList[i].name + "<br />";
+						}
+						if (recipeList.length == 0) {
+							text += "No recipes in the database";
+						}
+
+						obj.innerHTML = text;
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getRecipeList
+
+		function getRecipeById(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				var id = document.getElementById("t_recipeid").value;
+
+				source = source + id;
+				//alert(source);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var recipe = JSON
+								.parse(XMLHttpRequestObject.responseText)
+						//alert(ing);
+						var text = "";
+						if (XMLHttpRequestObject.responseText == "null") {
+							text = "<h3> Recipe </h3>";
+							text = text + "Recipe not in database with ID: "
+									+ id;
+						} else {
+							text = "<h3> Recipe </h3>";
+							text = text + recipe.id + ": " + recipe.name
+									+ "<br />" + "Calories: " + recipe.calories
+									+ "<br />" + "Instructions: "
+									+ recipe.instructions + "<br />"
+									+ "Servings: " + recipe.servings + "<br />"
+									+ "Rating: " + recipe.rating + "<br />"
+									+ "Description: " + recipe.description
+									+ "<br />" + "Prep Time: "
+									+ recipe.prepTime + "<br />"
+									+ "Ready Time: " + recipe.readyTime
+									+ "<br />" + "Cook Time: "
+									+ recipe.cookTime + "<br />" + "Comments: "
+									+ recipe.comments + "<br />";
+						}
+						obj.innerHTML = text;
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getRecipeById
+
+		function getRecipeByName(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				var name = document.getElementById("t_recipename").value;
+
+				source = source + name;
+				//alert(source);
+				XMLHttpRequestObject.open("GET", source);
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var recipe = JSON
+								.parse(XMLHttpRequestObject.responseText)
+						//alert(ing);
+						var text = "";
+						if (XMLHttpRequestObject.responseText == "null") {
+							text = "<h3> Recipe </h3>";
+							text = text + "Recipe not in database: " + name;
+						} else {
+							text = "<h3> Recipe </h3>";
+							text = text + recipe.id + ": " + recipe.name
+									+ "<br />" + "Calories: " + recipe.calories
+									+ "<br />" + "Instructions: "
+									+ recipe.instructions + "<br />"
+									+ "Servings: " + recipe.servings + "<br />"
+									+ "Rating: " + recipe.rating + "<br />"
+									+ "Description: " + recipe.description
+									+ "<br />" + "Prep Time: "
+									+ recipe.prepTime + "<br />"
+									+ "Ready Time: " + recipe.readyTime
+									+ "<br />" + "Cook Time: "
+									+ recipe.cookTime + "<br />" + "Comments: "
+									+ recipe.comments + "<br />";
+						}
+						obj.innerHTML = text;
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(null);
+			}//end if
+		}//end getRecipeByName
+
+// 		function addRecipe(source, divID) {
+// 			if (XMLHttpRequestObject) {
+// 				var obj = document.getElementById(divID);
+
+// 				//var id = document.getElementById("t_ingid").value;
+// 				//source = source+id;
+// 				//alert(source);
+
+// 				var rname = document.f_addRecipe.rname.value;
+
+// 				var parameters = "rname=" + rname;
+// 				//alert(parameters);
+// 				XMLHttpRequestObject.open("POST", source);
+// 				//alert(source);
+// 				XMLHttpRequestObject.setRequestHeader("Content-type",
+// 						"application/x-www-form-urlencoded");
+// 				XMLHttpRequestObject.onreadystatechange = function() {
+// 					if (XMLHttpRequestObject.readyState == 4
+// 							&& XMLHttpRequestObject.status == 200) {
+
+// 						var text = XMLHttpRequestObject.responseText;
+// 						obj.innerHTML = text;
+
+// 					}//end if
+// 				}//end onreadystatechange function
+
+// 				XMLHttpRequestObject.send(parameters);
+
+// 			}//end if
+// 		}//end addIngredient
+
+		function addRecipe(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				//var id = document.getElementById("t_ingid").value;
+				//source = source+id;
+				//alert(source);
+
+				var rname = document.f_addRecipe.rname.value;
+
+				var parameters = "rname=" + rname;
+				//alert(parameters);
+				XMLHttpRequestObject.open("POST", source);
+				//alert(source);
+				XMLHttpRequestObject.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+
+						var text = XMLHttpRequestObject.responseText;
+						obj.innerHTML = "<h2>Add Recipe</h2><table><tr><td><label for='recipeName'>Recipe Name:</label><input type='text' name='recipeName' id='recipeName' size='15'  /></td></tr><tr><td colspan='6'<div id='dynamicInput'>Ingredient:<input type='text' name='indgredients'></div><input type='button' value='Add Ingredient' onClick='addInput('dynamicInput');'<div id='dynamicAmount'>Amount:<input type='text' name='amount'></div><input type='button' value='Add Amount' onClick='addInput('dynamicInput');'</td></tr><tr><td><label for='instructions'>Instructions:</label><textarea cols='50'> </textarea></td></tr><tr><td><label for='description'>Description:</label><textarea cols='50'> </textarea></td></tr><tr><td><label for='servingSize'>Serving Size:<input type=number' name='servingSize' min='1' max='10'></td></tr><tr><td><label for='tags'>Tags:</label><textarea cols='35'> </textarea></td></tr><tr><td>Select images:<input type='file' name='img' multiple></td></tr><tr><td><input type='submit'></td></tr></table>";
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(parameters);
+
+			}//end if
+		}//end addIngredient
+
+		function deleteRecipe(source, divID) {
+			if (XMLHttpRequestObject) {
+				var obj = document.getElementById(divID);
+
+				//var id = document.getElementById("t_ingid").value;
+				//source = source+id;
+				//alert(source);
+
+				var rdel = document.f_deleteRecipe.rdel.value;
+
+				var parameters = "rdel=" + rdel;
+				XMLHttpRequestObject.open("POST", source);
+				XMLHttpRequestObject.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				XMLHttpRequestObject.onreadystatechange = function() {
+					if (XMLHttpRequestObject.readyState == 4
+							&& XMLHttpRequestObject.status == 200) {
+						var text = XMLHttpRequestObject.responseText;
+						obj.innerHTML = text;
+
+					}//end if
+				}//end onreadystatechange function
+
+				XMLHttpRequestObject.send(parameters);
+
+			}//end if
+		}//end addIngredient
+	</script>
+
+
+	<div id="header">
+		<h1>Meal Planner</h1>
+		<h2>A recipe aggregator and meal planner.</h2>
+
+		<p id="layoutdims">
+			<br />
+		</p>
+	</div>
+	<div class="colmask threecol">
+		<div class="colmid">
+			<div class="colleft">
+				<div class="col1">
+					<!-- Column 1 start -->
+					<h2>Search Results</h2>
+					<p id="p_results"></p>
+					<!-- Column 1 end -->
+				</div>
+				<div class="col2">
+					<!-- Column 2 start -->
+					<h2>Search Ingredients</h2>
+					<p>
+						<button id="btnBrowseAllIngs" onclick="getIngredientList('http://localhost:8080/MealsRWSTest/resources/ingredients/all','p_results')">Browse all
+							ingredients</button>
+					</p>
+					<p>
+						<br /> <br />
+					</p>
+					<p>
+						<!--  <form  action="" method="GET"> !-->
+						Ingredient ID: <br /> <input type="text" id="t_ingid" value="" /><br /> <input type="button" name="btn_ingid" value="Search Ingredients by ID"
+							onclick="getIngredientById('http://localhost:8080/MealsRWSTest/resources/ingredients/i?id=','p_results')" />
+					</p>
+					<p>
+						<!--  <form action="" method="GET"> -->
+						Ingredient name: <br /> <input type="text" id="t_ingname" value="" /><br /> <input type="button" name="btn_ingname" value="Search Ingredients by Name"
+							onclick="getIngredientByName('http://localhost:8080/MealsRWSTest/resources/ingredients/n?name=','p_results')" />
+					</p>
+					<p>
+					<form action="" method="POST" name="f_addIngredient">
+						Add an ingredient: <br /> <input type="text" name="iname" value="" id="iname" /> <input type="button" value="Add Ingredient"
+							onclick="addIngredient('http://localhost:8080/MealsRWSTest/resources/ingredients/add','p_results')" />
+					</form>
+					</p>
+					<p>
+					<form action="" method="POST" name="f_deleteIngredient">
+						Delete an ingredient: <br /> <input type="text" name="idel" value="" id="idel" /> <input type="button" value="Delete Ingredient"
+							onclick="deleteIngredient('http://localhost:8080/MealsRWSTest/resources/ingredients/delete','p_results')" />
+					</form>
+					</p>
+
+					<p></p>
+					<!-- Column 2 end -->
+				</div>
+				<div class="col3">
+					<!-- Column 3 start -->
+					<h2>Search Recipes</h2>
+					<p>
+						<button id="btnBrowseAllRecipes" onclick="getRecipeList('http://localhost:8080/MealsRWSTest/resources/recipes/all','p_results')">Browse all
+							recipes</button>
+					</p>
+					<p>
+						<br /> <br />
+					</p>
+					<p>
+						<!--  <form  action="" method="GET"> !-->
+						Recipe ID: <br /> <input type="text" id="t_recipeid" value="" /><br /> <input type="button" name="btn_recipeid" value="Search Recipes by ID"
+							onclick="getRecipeById('http://localhost:8080/MealsRWSTest/resources/recipes/i?id=','p_results')" />
+					</p>
+					<p>
+						<!--  <form action="" method="GET"> -->
+						Recipe name: <br /> <input type="text" id="t_recipename" value="" /><br /> <input type="button" name="btn_recipename" value="Search Recipes by Name"
+							onclick="getRecipeByName('http://localhost:8080/MealsRWSTest/resources/recipes/n?name=','p_results')" />
+					</p>
+					<p>
+						<form action="" method="POST" name="f_addRecipe">
+						Add a recipe: <br /> <input type="text" name="rname" value="" id="rname" /> <input type="button" value="Add Recipe"
+							onclick="addRecipe('http://localhost:8080/MealsRWSTest/resources/recipes/add','p_results')" />
+					</form>
+					</p>
+					<p><form action="" method="POST" name="f_deleteRecipe">
+						Delete a recipe: <br /> <input type="text" name="rdel" value="" id="rdel" /> <input type="button" value="Delete Recipe"
+							onclick="deleteRecipe('http://localhost:8080/MealsRWSTest/resources/recipes/delete','p_results')" />
+					</form>
+					</p>
+					<!-- Column 3 end -->
+					</div>
+			</div>
+		</div>
+	</div>
+	<div id="footer">
+		<p>
+			
+		</p>
+	</div>
+
+</body>
+</html>
